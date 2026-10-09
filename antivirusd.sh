@@ -3,10 +3,10 @@
 FLAGGED_EXTENSIONS="exe bat vbs scr ps1"
 FLAGGED_KEYWORDS="virus trojan malware worm ransomware"
 
-
 watchpath=$1
 quarantinepath=$2
 waitingTime=$3
+WhiteList="./whitelist"
 
 scan() {
 find "$watchpath" -type f | while IFS= read -r file
@@ -26,6 +26,12 @@ for key in $FLAGGED_KEYWORDS; do
 		malicious="yes"
 	fi
 done
+
+
+if grep -Fxq "$filename" "$WhiteList"; then
+	malicious="no"
+fi
+    	
 
     if [ "$malicious" = "yes" ]; then
     	echo "$file is malicious and it is DELETED"
